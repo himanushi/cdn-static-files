@@ -1,13 +1,69 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Clock Face Lines (with 3 & 9 included)</title>
+  <style>
+    body {
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      height: 100vh; 
+      margin: 0;
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+<svg id="clock-face" width="1000" height="1000" viewBox="0 0 300 300"
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- 中心点 (確認用) -->
+  <circle cx="150" cy="150" r="1" fill="black" />
+
+    <!-- 外円 (時計の枠) -->
+  <circle cx="150" cy="150" r="100"
+    stroke="black" fill="none" stroke-width="0.1" />
+</svg>
+
+<script>
+  const svg = document.getElementById("clock-face");
+  const centerX = 150;
+  const centerY = 150;
+  const radius = 100;
+
+  // i=0..29 の 30本
+  //  ・始点角度 = angleStartDeg = -90 + 6*i
+  //  ・終点角度 = angleEndDeg   = angleStartDeg + 180
+  // （これで 3時(0°) や 9時(180°) も含むすべての方向がカバーされる）
+  for (let i = 0; i < 30; i++) {
+    const angleStartDeg = -90 + 6*i;        // 度数
+    const angleEndDeg   = angleStartDeg+180;// 度数(始点+180°)
+
+    // 度 → ラジアン
+    const angleStartRad = angleStartDeg * Math.PI / 180;
+    const angleEndRad   = angleEndDeg   * Math.PI / 180;
+
+    // 始点 (x1, y1)
+    const x1 = centerX + radius * Math.cos(angleStartRad);
+    const y1 = centerY + radius * Math.sin(angleStartRad);
+
+    // 終点 (x2, y2)
+    const x2 = centerX + radius * Math.cos(angleEndRad);
+    const y2 = centerY + radius * Math.sin(angleEndRad);
+
+    // <line> 要素を生成
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("stroke", "black");
+    line.setAttribute("stroke-width", "0.1");
+
+    svg.appendChild(line);
+  }
+</script>
+
+</body>
 </html>
